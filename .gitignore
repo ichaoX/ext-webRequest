@@ -1,0 +1,6 @@
+.vscode
+/test
+.web-extension-id
+web-ext-artifacts
+/src/external/*
+!/src/external/README.md

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>WebRequest</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/icon.svg">
+	<link href="/external/fonts/roboto/latin.css" rel="stylesheet">
+	<link href="/external/fonts/mdi/css/materialdesignicons.min.css" rel="stylesheet">
+	<link href="/external/vuetify/2.x/vuetify.css" rel="stylesheet">
+	<link href="./editor.css" rel="stylesheet">
+	<style media="(max-width:350px)">
+		:root {
+			overflow-y: auto;
+			animation: fix-scrollbar 2s forwards 0s;
+		}
+
+		@keyframes fix-scrollbar {
+			from {
+				scrollbar-width: none;
+			}
+
+			to {
+				scrollbar-width: auto;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app" v-cloak>
+		<router-view></router-view>
+	</div>
+	<script src="/external/vue.js"></script>
+	<script src="/external/vue-router/3.x/vue-router.js"></script>
+	<script src="./configs.js"></script>
+	<script src="/external/vue3-sfc-loader/0.8.4/vue2-sfc-loader.js"></script>
+	<script src="/external/vuetify/2.x/vuetify.js"></script>
+	<script src="/external/Sortable.min.js"></script>
+	<script src="/external/vuedraggable.umd.min.js"></script>
+	<script src="./util.js"></script>
+	<script src="./main.js"></script>
+	<script src="./editor.js"></script>
+</body>
+
+</html>

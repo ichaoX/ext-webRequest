@@ -1,0 +1,59 @@
+{
+  "description": "Customize web requests by coding JavaScript yourself.",
+  "manifest_version": 2,
+  "name": "WebRequest Rules",
+  "icons": {
+    "32": "/icon.svg",
+    "128": "/icon.svg"
+  },
+  "version": "4.4",
+  "permissions": [
+    "declarativeNetRequestWithHostAccess",
+    "storage",
+    "tabs",
+    "unlimitedStorage",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "optional_permissions": [
+    "bookmarks",
+    "clipboardRead",
+    "clipboardWrite",
+    "cookies",
+    "declarativeNetRequestFeedback",
+    "downloads",
+    "history",
+    "notifications",
+    "tabHide",
+    "webNavigation",
+    "webRequestFilterResponse.serviceWorkerScript"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
+  "background": {
+    "scripts": [
+      "assets/configs.js",
+      "assets/util.js",
+      "tab.js",
+      "assets/legacy-encoding.js",
+      "external/text-encoding/encoding-indexes.js",
+      "external/text-encoding/encoding.js",
+      "background.js"
+    ]
+  },
+  "options_ui": {
+    "page": "assets/index.html#/options",
+    "browser_style": false,
+    "open_in_tab": true
+  },
+  "browser_action": {
+    "default_popup": "assets/index.html#/popup",
+    "browser_style": false,
+    "default_icon": "/icon.svg"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "webrequest@example.com"
+    }
+  }
+}
