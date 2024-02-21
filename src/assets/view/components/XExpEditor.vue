@@ -252,6 +252,9 @@ export default {
         init: this.settings.code_editor_init,
         dts: util.getHint(this.type, "dts"),
         jsdoc: util.getHint(this.type, "jsdoc"),
+        initjs:
+          !["init", "code_editor_init"].includes(this.type) &&
+          util.getInitExp(),
         params: util.getParams(this.type),
         tpl: this.tplItems,
       };

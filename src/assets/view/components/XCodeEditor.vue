@@ -98,6 +98,13 @@ export default {
                 true
               );
             }
+            if (params.initjs) {
+              editorUtil.languages.javascript.addExtraLib(
+                params.initjs,
+                "init.js",
+                true
+              );
+            }
             let completionItems = [];
             if (params.jsdoc) {
               completionItems.push({

@@ -160,6 +160,40 @@ const util = {
         }
         return `(function (${args.join(', ')}) { ${exp}\n})`;
     },
+    regExpQuote(str) {
+        let chars = '.\\+*?[^]$(){}=!<>|:-#';
+        return str.replace(new RegExp(`([${chars.replace(/(.)/g, '\\$1')}])`, 'g'), '\\$1');
+    },
+    getInitExp() {
+        let exp = this._init_code && this._init_code.exp;
+        exp = this.normalFuncExp(exp, 'init', true);
+        if (!exp) return;
+        // FIXME
+        let rmDoc = (js) => {
+            let code = js.replace(/(\/\*[\s\S]*?\*\/|\/\/.*)/, ' ');
+            if (code != js) return rmDoc(code);
+            return js;
+        }
+        let vars = [];
+        try {
+            let rawCode = rmDoc(exp);
+            vars = [...new Set([...rawCode.matchAll(/\b((?:self|window|globalThis)\s*\.\s*([A-Za-z_$][\w$]*))\s*=[^=]/g)].map(e => e[2]))];
+        } catch (e) {
+            console.warn(e);
+        }
+        if (vars.length === 0) return;
+        let uname = (n) => `_self_${n}`;
+        exp = exp.replace(new RegExp(`\\b(?:self|window|globalThis)\\s*\\.\\s*(${vars.map(this.regExpQuote).join('|')})\\b`, 'g'), (m, n) => uname(n));
+        return `
+var [${vars.join(', ')}] = (() => {
+    let ${vars.map(uname).join(', ')};
+    (
+${exp}
+    )();
+    return [${vars.map(uname).join(', ')}];
+})();
+`.trim();
+    },
     _storageArea: 'local',
     _prefix: '',
     _defaultConfig: {
