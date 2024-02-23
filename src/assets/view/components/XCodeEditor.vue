@@ -150,10 +150,11 @@ export default {
               }
             }
             if (params.headers) {
+              // XXX
               for (let header of params.headers) {
                 let item = {
                   kind: "Text",
-                  label: `"${header}"`,
+                  label: `${header}`,
                   documentation: "HTTP Header",
                 };
                 completionItems.push(
@@ -166,6 +167,7 @@ export default {
                   ),
                   Object.assign(
                     {
+                      insertText: `"${header}"`,
                       documentation: "HTTP Header",
                       excludePattern: /(['"`]|([~@#$%^\*\-\_\\\.]\s*))$/,
                     },
