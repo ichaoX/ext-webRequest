@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-select
+    <v-autocomplete
       v-if="(isShowTpl = !exp && tplItems.length > 0)"
       label="Template"
       @change="onChange($event, true)"
@@ -11,6 +11,7 @@
       :error="valid !== true"
       :validate-on-blur="true"
       ref="expSelect"
+      clearable
     >
       <template #item="{ item }">
         {{ item.name }}
@@ -26,7 +27,7 @@
           <v-icon> mdi-star </v-icon>
         </v-btn>
       </template>
-    </v-select>
+    </v-autocomplete>
     <div v-else @mouseleave="pinHint = false">
       <component
         :is="useCodeEditor ? 'x-code-editor' : 'v-textarea'"
@@ -342,6 +343,7 @@ export default {
       ));
     },
     onChange(value, isTpl = false) {
+      value = value || "";
       this.rawText = value;
       if (this.validExp(value) === true) {
         if (this.wrappable && !isTpl && !util.isFuncExp(value))
