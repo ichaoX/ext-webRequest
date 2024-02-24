@@ -211,12 +211,27 @@ util.addListener(browser.webRequest.onBeforeRequest,
     if (filterResponseFunc && browser.webRequest.filterResponseData) {
       let filter = browser.webRequest.filterResponseData(details.requestId);
       share.filter = filter;
+      const queue = [];
+      const taskQueue = (fn) => {
+        return async function (...args) {
+          let resolve;
+          queue.push(new Promise(r => (resolve = r)));
+          if (queue.length > 1) await queue[queue.length - 2];
+          try {
+            return await fn.call(this, ...args);
+          } finally {
+            resolve();
+            queue.shift();
+          }
+        };
+      };
+      let qExecute = taskQueue(execute);
       filter.onerror = event => {
         // console.warn('filter_error', url, filter.error, event)
         // filter.disconnect();
         return execute(filterResponseFunc, [event, share, filter, details]);
       };
-      filter.onstart = event => {
+      filter.onstart = async event => {
         if (!!share.contexts.find(c => c.matchStatus === false && c.rule.filterResponse)) {
           filterResponseFunc = share.getFuncs('filterResponse');
           if (!filterResponseFunc) {
@@ -224,17 +239,18 @@ util.addListener(browser.webRequest.onBeforeRequest,
             return;
           }
         }
-        return execute(filterResponseFunc, [event, share, filter, details]);
+        let data = await qExecute(filterResponseFunc, [event, share, filter, details], options => null != options.val);
+        if (data) filter.write(data);
       };
       filter.ondata = async event => {
-        let chunk = await execute(filterResponseFunc, [event, share, filter, details], options => false !== options.val);
+        let chunk = await qExecute(filterResponseFunc, [event, share, filter, details], options => null != options.val);
         // console.log(chunk);
         if (false !== chunk) filter.write(chunk || event.data);
       };
       filter.onstop = async event => {
         let data;
         try {
-          data = await execute(filterResponseFunc, [event, share, filter, details], options => false !== options.val);
+          data = await qExecute(filterResponseFunc, [event, share, filter, details], options => null != options.val);
           if (data) filter.write(data);
         } finally {
           if (false !== data) filter.close();
