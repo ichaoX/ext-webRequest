@@ -36,6 +36,7 @@ const shareData = new Map();
 function execute(func, args = [], stopCheck = null) {
   if (Array.isArray(func)) {
     if (func.length == 1) return execute(func[0], args, stopCheck);
+    func = func.slice(0);
     let f;
     let options = { args: args, val: undefined, ret: undefined };
     while ((f = func.shift()) !== undefined) {
