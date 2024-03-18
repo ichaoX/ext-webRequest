@@ -372,10 +372,14 @@ export default {
           let body = value.slice(part[0].length, -1 * part[1].length);
           if (!!body.trim()) {
             unwrapped = true;
-            value = body
-              .replace(/^(\s*[\r\n])+/, "")
-              .replace(/^(\s+)/, "//# REMOVABLE\n$1")
-              .trim();
+            body = body.replace(/^(\s*[\r\n])+/, "");
+            if (util.isFuncExp(body)) {
+              // XXX
+              body =
+                "; // Avoid starting the function body with a function declaration.\n" +
+                body;
+            }
+            value = body.replace(/^(\s+)/, "//# REMOVABLE\n$1").trim();
           }
         }
         if (!unwrapped && value.startsWith("/*")) {
