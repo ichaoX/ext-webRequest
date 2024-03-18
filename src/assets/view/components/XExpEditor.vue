@@ -186,7 +186,7 @@ export default {
     XTooltip,
   },
   props: {
-    exp: String,
+    raw: String,
     label: String,
     type: String,
     tplInheritType: String,
@@ -206,7 +206,7 @@ export default {
     hideLink: Boolean,
   },
   model: {
-    prop: "exp",
+    prop: "raw",
     event: "change",
   },
   data: function () {
@@ -232,8 +232,11 @@ export default {
     this.wrapFunc();
   },
   computed: {
+    exp() {
+      return (this.raw || "").replace(/^\/\/# REMOVABLE\n/, "");
+    },
     value() {
-      return this.unwrapFunc(this.rawText.trim());
+      return this.unwrapFunc(this.trim(this.rawText));
     },
     wrapFuncExp() {
       if (!this.wrappable) return this.exp;
@@ -350,10 +353,19 @@ export default {
           this.wrappable = false;
         value = this.unwrapFunc(value, true);
       }
-      this.$emit("change", value);
+      this.$emit("change", this.trim(value));
+    },
+    trim(value) {
+      value = value || "";
+      if (!util.isFuncExp(value)) {
+        value = value
+          .replace(/^(\s*[\r\n])+/, "")
+          .replace(/^(\s+)/, "//# REMOVABLE\n$1");
+      }
+      return value.trim();
     },
     wrapFunc() {
-      let exp = (this.exp || "").trim();
+      let exp = (this.raw || "").trim();
       if (!exp || this.valid !== true) return this.exp;
       let newExp = util.normalFuncExp(exp, this.type, true);
       this.wrappable = newExp.trim() != exp;
@@ -379,7 +391,7 @@ export default {
                 "; // Avoid starting the function body with a function declaration.\n" +
                 body;
             }
-            value = body.replace(/^(\s+)/, "//# REMOVABLE\n$1").trim();
+            value = this.trim(body);
           }
         }
         if (!unwrapped && value.startsWith("/*")) {
@@ -410,7 +422,7 @@ export default {
       }
       let tpl = this.customTpl;
       let item = tpl.find((o) => o.name === name);
-      let exp = this.exp.trim();
+      let exp = this.trim(this.raw);
       if (item) {
         item.exp = exp;
       } else {
