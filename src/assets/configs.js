@@ -250,7 +250,7 @@ self.WR = {
 		if (!Array.isArray(domain)) domain = [domain];
 		for (let pattern of domain) {
 			if (pattern instanceof RegExp ? pattern.test(hostname) : (
-				pattern[0] === "." ? hostname.endsWith(pattern) : (hostname === pattern || hostname.endsWith('.' + pattern))
+				pattern[0] === '.' ? hostname.endsWith(pattern) : (hostname === pattern || hostname.endsWith('.' + pattern))
 			)) return true;
 		}
 		return false;
@@ -319,7 +319,7 @@ This feature requires ACCESS_LEVEL >= 20 (partial).
 editorUtil.updateOptions({
 	fontSize: '15px',
 	quickSuggestions: true,
-	wordWrap: "off",
+	wordWrap: 'off',
 	scrollBeyondLastLine: false,
 	minimap: {
 		enabled: self.innerWidth > 500,
@@ -370,8 +370,9 @@ if ('function' === typeof editorUtil.setEditorType) {
         tpl: [{
                 name: 'Domain',
                 exp: `
-let hostname = "example.com";
-return hostname === (new URL(details.url)).hostname;
+let hostnames = ['example.com'];
+let urlObj = new URL(details.url);
+return hostnames.includes(urlObj.hostname);
 `,
             },
             {
@@ -382,7 +383,7 @@ return url === details.url;
 `,
             },
             {
-                name: 'Prefix',
+                name: 'URL Prefix',
                 exp: `
 let prefix = 'http://example.com/';
 return details.url.startsWith(prefix);
@@ -398,8 +399,18 @@ return regex.test(details.url);
             {
                 name: 'Main Frame',
                 exp: `
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/ResourceType
 let types = ['main_frame'];
-return types.includes(details.type);
+if (!types.includes(details.type)) return false;
+return true;
+`,
+            },
+            {
+                name: 'HTTP Method',
+                exp: `
+let methods = ['GET', 'HEAD', 'OPTIONS'];
+if (!methods.includes(details.method)) return false;
+return true;
 `,
             },
             {
@@ -409,9 +420,10 @@ return true;
 `,
             },
             {
-                name: 'Exclude this extension',
+                name: 'Exclude This Extension',
                 exp: `
-return details.type === 'main_frame' || !(details.originUrl || '').startsWith(browser.runtime.getURL(''));
+if ((details.originUrl || '').startsWith(self.origin + '/')) return false;
+return true;
 `,
             },
             {
@@ -451,7 +463,8 @@ return { cancel: true };
             {
                 name: 'Redirect',
                 exp: `
-return { redirectUrl: 'https://www.example.com' };
+let url = \`https://example.org/?url=\${encodeURIComponent(details.url)}\`;
+return { redirectUrl: url };
 `,
             },
             {
@@ -492,8 +505,11 @@ async function f(details, share) {
 let headersInit = {
 	"x-forwarded-for": "127.0.0.1",
 	"user-agent": "Mozilla/5.0",
+	"referer": null,
 };
-let headers = Object.entries(headersInit).map(o => ({ name: o[0], value: o[1] }));
+let headers = Object.entries(headersInit)
+	.filter(([k, v]) => v !== null)
+	.map(([k, v]) => ({ name: k, value: v }));
 for (let header of details.requestHeaders) {
 	let name = header.name.toLowerCase();
 	if (name in headersInit) continue;
@@ -583,12 +599,16 @@ function f(details, share) {
 let headersInit = {
 	"access-control-allow-origin": "*",
 	"access-control-allow-headers": "Content-Type, Range, X-Requested-With",
+	"content-security-policy": null,
+	"content-security-policy-report-only": null,
+	"x-frame-options": null,
 };
-let headers = Object.entries(headersInit).map(o => ({ name: o[0], value: o[1] }));
+let headers = Object.entries(headersInit)
+	.filter(([k, v]) => v !== null)
+	.map(([k, v]) => ({ name: k, value: v }));
 for (let header of details.responseHeaders) {
 	let name = header.name.toLowerCase();
 	if (name in headersInit) continue;
-	if (/^content-security-policy/.test(name)) header.name = 'x-' + header.name;
 	headers.push(header);
 }
 return { responseHeaders: headers };
@@ -603,7 +623,8 @@ return { cancel: true };
             {
                 name: 'Redirect',
                 exp: `
-return { redirectUrl: 'https://www.example.com' };
+let url = \`https://example.org/?url=\${encodeURIComponent(details.url)}\`;
+return { redirectUrl: url };
 `,
             },
             {
@@ -752,7 +773,7 @@ function f(details, share) {
 @param share {_share}
 @param filter {streamFilter}
 @param details {onBeforeRequestDetails}
-@return {Uint8Array|ArrayBuffer|false|null}
+@return {Uint8Array|ArrayBuffer|false|void}
 `,
         tpl: [{
                 name: 'Specify Response Body',
@@ -769,24 +790,23 @@ filter.close();
                 name: 'Modify Response Body',
                 exp: `
 if ('error' === event.type) return console.warn('filter_error', filter.error, details.url);
-if (!share.data) share.data = [];
+if (!this.buffer) this.buffer = [];
 if ('data' === event.type) {
-	share.data.push(event.data);
+	this.buffer.push(event.data);
+	// Prevent default output stream writing.
 	return false;
 }
 if ('stop' !== event.type) return;
-if (!this.decoder) this.decoder = new TextDecoder('utf-8');
-if (!this.encoder) this.encoder = new TextEncoder();
-let decoder = this.decoder;
-let encoder = this.encoder;
-let text = share.data.reduce((s, buffer) => s + decoder.decode(buffer, { stream: true }), '') + decoder.decode();
+let decoder = this.decoder || (this.decoder = new TextDecoder('utf-8'));
+let encoder = this.encoder || (this.encoder = new TextEncoder());
+let text = this.buffer.reduce((s, buffer) => s + decoder.decode(buffer, { stream: true }), '') + decoder.decode();
 console.log(text);
 text = text.replace(/Example/g, 'WebRequest $&');
 return encoder.encode(text);
 `,
             },
             {
-                name: 'Nothing',
+                name: 'Disconnect Filter',
                 exp: `
 filter.disconnect();
 `,
@@ -796,15 +816,24 @@ filter.disconnect();
                 exp: `
 async function f(event, share, filter, details) {
 
-if ('error' === event.type) return console.warn('filter_error', filter.error, details.url);
-if (!share.data) share.data = [];
-if ('data' === event.type) {
-	let data = event.data;
-	share.data.push(data);
-	return data;
-}
-if ('stop' === event.type) {
-	console.log(share.data);
+if (!this.buffer) this.buffer = [];
+switch (event.type) {
+	case 'start': {
+		return;
+	}
+	case 'data': {
+		let data = event.data;
+		this.buffer.push(data);
+		return data;
+	}
+	case 'stop': {
+		console.log(this.buffer);
+		return;
+	}
+	case 'error': {
+		console.warn('filter_error', filter.error, details.url);
+		return;
+	}
 }
 
 }
