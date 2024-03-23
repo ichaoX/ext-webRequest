@@ -592,7 +592,7 @@
                       hide-details
                     ></v-checkbox>
                     <v-checkbox
-                      label="Allow JavaScript object as search condition"
+                      label="Allow object literal as search condition"
                       v-model="settings.search_parse_js_object"
                       @change="saveSettings({ search_parse_js_object: $event })"
                       dense
