@@ -19,6 +19,11 @@ Full control of the [WebRequest API](https://developer.mozilla.org/docs/Mozilla/
 * Support for asyncBlocking
 * Import/Export settings
 
+## Getting Started
+
+* [Guide](./docs/Guide.md)
+* [Examples](./docs/Examples.md)
+
 ## Notes
 
 * Optional permissions need to be enabled manually only if you want to write functionality that relies on these APIs.
