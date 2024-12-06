@@ -237,6 +237,37 @@ let urlObj = new URL(details.url);
 return <b>! </b>hostnames.includes(urlObj.hostname);
 </code></pre>
 
+## Cancel Requests by Request Body
+
+This rule will cancel POST requests to `https://httpbin.org/post` where the request body contains `ABCD`.
+
+1. Match Request > HTTP Method
+
+<pre>
+<code>let methods = <b>['POST']</b>;
+if (!methods.includes(details.method)) return false;
+<b>
+let prefix = 'https://httpbin.org/post';
+if (!details.url.startsWith(prefix)) return false;
+
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#requestbody
+if (!details.requestBody) return false;
+let bodyText = '';
+try {
+    if (details.requestBody.raw) {
+        let decoder = new TextDecoder('utf-8');
+        bodyText = details.requestBody.raw.reduce((s, r) => s + decoder.decode(r.bytes, { stream: true }), '') + decoder.decode();
+    } else if (details.requestBody.formData) {
+        bodyText = JSON.stringify(details.requestBody.formData);
+    }
+} catch (e) {
+    console.warn(e, details.requestBody);
+}
+return bodyText.includes('ABCD');</b>
+</code></pre>
+
+2. BeforeRequest > Cancel
+
 ## Match Response Status Code
 
 This rule will match pages like `https://httpbin.org/status/418` with a response status code of 418 and prepend `statusLine` to the response body.
