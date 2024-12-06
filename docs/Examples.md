@@ -254,12 +254,12 @@ this.setMatchStatus(isMatched);
 3. FilterResponse > Specify Response Body
 
 <pre>
-<code>if ('error' === event.type) return console.warn('filter_error', filter.error, details.url);
-if ('start' !== event.type) return;
+<code>if ('start' !== event.type) <b>return;
+// FIX: https://bugzilla.mozilla.org/show_bug.cgi?id=1543018
+if (!this.matchStatus) return;</b>
 let text = <b>this.statusLine + "\n"</b>;
 let encoder = new TextEncoder();
-filter.write(encoder.encode(text));
-<b>// filter.close();</b>
+<b>return encoder.encode(text);</b>
 </code></pre>
 
 ## Automatic Retry

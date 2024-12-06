@@ -46,6 +46,8 @@ For more details, visit: https://developer.mozilla.org/en-US/docs/Mozilla/Add-on
 
 * The data displayed in the Web Developer Tools may be before modification.
 
+* The browser may not fire some WebRequest events, such as when using cache or Service Workers.
+
 * Avoid using `async function` or handling complex calculations during the `Match Request` stage, as this may slow down all requests.
 
 * Conflicts should be avoided when sharing data using `share`, `self`, or `window`.
