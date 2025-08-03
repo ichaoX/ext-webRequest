@@ -171,7 +171,7 @@ let updateAction = (tabId, delay = null) => {
     });
     return;
   }
-  if (delay === null) delay = settings.tab_info_throtte || 500;
+  if (delay === null) delay = settings.tab_info_throttle || 500;
   if (delay === 0) bargeInfos.delete(tabId);
   else if (bargeInfos.has(tabId)) return;
   bargeInfos.set(tabId, setTimeout(async () => {

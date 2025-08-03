@@ -386,7 +386,7 @@ util.getSettings([
   'global_status',
   'global_test',
   'request_verbose',
-  'tab_info_throtte',
+  'tab_info_throttle',
 ], async (results) => {
   if (results.init) {
     util._init_code = results.init;

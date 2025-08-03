@@ -126,7 +126,7 @@ export default {
   },
   mounted() {
     util.getSettings(
-      ["rules", "global_status", "tab_info_throtte", "popup_auto_close"],
+      ["rules", "global_status", "tab_info_throttle", "popup_auto_close"],
       (results) => {
         for (let key in results) {
           this.$set(this.settings, key, results[key]);
@@ -212,7 +212,7 @@ export default {
       this.timeoutId = setTimeout(() => {
         this.timeoutId = null;
         this.loadOptions();
-      }, this.settings.tab_info_throtte || 500);
+      }, this.settings.tab_info_throttle || 500);
     },
     onClickHref(event) {
       if (this.settings.popup_auto_close) {
