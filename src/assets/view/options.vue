@@ -752,7 +752,6 @@ import XTableGroupHeader from "./components/XTableGroupHeader.vue";
 import XTooltip from "./components/XTooltip.vue";
 
 export default {
-  vuetify: new Vuetify(),
   components: {
     XVNodes: {
       functional: true,

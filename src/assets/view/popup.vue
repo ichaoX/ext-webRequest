@@ -120,7 +120,6 @@
 <script>
 import XTooltip from "./components/XTooltip.vue";
 export default {
-  vuetify: new Vuetify(),
   components: {
     XTooltip,
   },
@@ -247,12 +246,22 @@ export default {
   text-align: center;
   display: block;
   padding: 20px;
-  color: gray;
+  color: var(--theme-text-secondary);
 }
 </style>
 <style>
 body {
   min-width: 300px;
   min-height: 150px;
+  background-color: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
+}
+
+/* Avoid background color differences on pages */
+.v-application {
+  background: var(--theme-bg-primary) !important;
+}
+.v-application .v-main__wrap {
+  background: var(--theme-bg-primary) !important;
 }
 </style>
