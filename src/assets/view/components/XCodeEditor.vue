@@ -11,9 +11,14 @@
     <div class="v-label v-label--active" :class="theme === 'dark' ? 'theme--dark' : 'theme--light'" v-if="label">
       {{ label }}
     </div>
+    <!--
+      Static class binding to prevent loss during re-render.
+      Ensure that Code Editor embedded iframe don't fall back to the default size.
+    -->
     <v-card
       flat
       width="100%"
+      class="ext-code-editor"
       v-intersect="{
         handler: onIntersect,
         options: {
