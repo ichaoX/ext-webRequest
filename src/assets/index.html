@@ -10,6 +10,11 @@
 	<link href="/external/fonts/mdi/css/materialdesignicons.min.css" rel="stylesheet">
 	<link href="/external/vuetify/2.x/vuetify.css" rel="stylesheet">
 	<link href="./editor.css" rel="stylesheet">
+<!--
+	Use external scripts to avoid violating CSP policies.
+	Prevent background flickering before the theme loads
+-->
+	<script src="./theme-init.js"></script>
 	<style media="(max-width:350px)">
 		:root {
 			overflow-y: auto;
