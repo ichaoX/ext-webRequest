@@ -187,3 +187,45 @@ let updateAction = (tabId, delay = null) => {
     });
   }, delay));
 };
+
+
+util.addListener(browser.commands.onCommand, async (command) => {
+  try {
+    switch (command) {
+      case 'toggle-tab-status':
+        await toggleTabStatus();
+        break;
+      case 'toggle-global-status':
+        await toggleGlobalStatus();
+        break;
+      case 'open-options':
+        await openOptionsPage();
+        break;
+    }
+  } catch (e) {
+    console.error('Command error:', command, e);
+  }
+});
+
+async function toggleTabStatus() {
+  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+  if (!tabs?.[0]) return;
+
+  const tabId = tabs[0].id;
+  const info = getTabInfo(tabId);
+  info.disabled = !info.disabled;
+  updateAction(tabId, 0);
+}
+
+async function toggleGlobalStatus() {
+  const { global_status } = await util.getSettings(['global_status']);
+  const newStatus = !global_status;
+
+  await util.setSettings({ global_status: newStatus });
+  settings.global_status = newStatus;
+  updateAction(0);
+}
+
+async function openOptionsPage() {
+  await browser.runtime.openOptionsPage();
+}
