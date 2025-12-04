@@ -1,3 +1,64 @@
+:root {
+    /* Light theme colors */
+    --light-bg-primary: #ffffff;
+    --light-bg-secondary: #f5f5f5;
+    --light-bg-elevated: #fafafa;
+    --light-border: #e0e0e0;
+    --light-text-primary: #212121;
+    --light-text-secondary: #757575;
+    --light-text-disabled: #bdbdbd;
+    --light-editor-bg: #eeeeee;
+
+    /* Dark theme colors */
+    --dark-bg-primary: #1e1e1e;
+    --dark-bg-secondary: #252526;
+    --dark-bg-elevated: #2d2d30;
+    --dark-border: #3e3e42;
+    --dark-text-primary: #cccccc;
+    --dark-text-secondary: #969696;
+    --dark-text-disabled: #656565;
+    --dark-editor-bg: #1e1e1e;
+
+    /* Active theme variables (default to light) */
+    --theme-bg-primary: var(--light-bg-primary);
+    --theme-bg-secondary: var(--light-bg-secondary);
+    --theme-bg-elevated: var(--light-bg-elevated);
+    --theme-border-color: var(--light-border);
+    --theme-text-primary: var(--light-text-primary);
+    --theme-text-secondary: var(--light-text-secondary);
+    --theme-text-disabled: var(--light-text-disabled);
+    --theme-editor-bg: var(--light-editor-bg);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        --theme-bg-primary: var(--dark-bg-primary);
+        --theme-bg-secondary: var(--dark-bg-secondary);
+        --theme-bg-elevated: var(--dark-bg-elevated);
+        --theme-border-color: var(--dark-border);
+        --theme-text-primary: var(--dark-text-primary);
+        --theme-text-secondary: var(--dark-text-secondary);
+        --theme-text-disabled: var(--dark-text-disabled);
+        --theme-editor-bg: var(--dark-editor-bg);
+    }
+}
+
+:root[data-theme='dark'] {
+    --theme-bg-primary: var(--dark-bg-primary);
+    --theme-bg-secondary: var(--dark-bg-secondary);
+    --theme-bg-elevated: var(--dark-bg-elevated);
+    --theme-border-color: var(--dark-border);
+    --theme-text-primary: var(--dark-text-primary);
+    --theme-text-secondary: var(--dark-text-secondary);
+    --theme-text-disabled: var(--dark-text-disabled);
+    --theme-editor-bg: var(--dark-editor-bg);
+}
+
+/* Prevent page flash */
+html, body {
+    background-color: var(--theme-bg-primary) !important;
+}
+
 /**
  * Code Editor Extension
  * @version: 1.1
@@ -9,7 +70,7 @@
     width: 100%;
     resize: vertical;
     overflow-y: hidden;
-    background-color: #eee;
+    background-color: var(--theme-editor-bg);
     box-sizing: border-box;
 }
 

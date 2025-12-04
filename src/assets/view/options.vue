@@ -635,6 +635,19 @@
                     </v-slider>
                   </x-list-item>
                   <v-divider></v-divider>
+                  <x-list-item label="Theme">
+                    <v-chip-group
+                      v-model="settings.theme_mode"
+                      @change="onThemeChange"
+                      mandatory
+                      active-class="primary--text"
+                    >
+                      <v-chip label value="auto">Auto</v-chip>
+                      <v-chip label value="light">Light</v-chip>
+                      <v-chip label value="dark">Dark</v-chip>
+                    </v-chip-group>
+                  </x-list-item>
+                  <v-divider></v-divider>
                   <x-list-item label="Popup">
                     <v-checkbox
                       label="Auto close popup when go to new page"
@@ -752,6 +765,10 @@ export default {
     XTooltip,
   },
   mounted() {
+    this.$root.$on('theme-changed', () => {
+      this.$forceUpdate();
+    });
+
     let loadSettings = (results) => {
       if (!results) return;
       for (let key in results) {
@@ -1155,6 +1172,15 @@ export default {
     verifyExp(exp, type) {
       if (!this.settings.exp_verify_syntax) return true;
       return util.validExp(util.normalFuncExp(exp, type), "function");
+    },
+    async onThemeChange(mode) {
+      const themeMode = mode || 'auto';
+
+      util.initTheme(themeMode);
+      await util.setSettings({ theme_mode: themeMode });
+
+      const resolvedTheme = util.getCurrentTheme();
+      this.$root.$emit('theme-changed', resolvedTheme);
     },
     execInit() {
       util.sendMessage("init");
