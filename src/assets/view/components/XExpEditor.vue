@@ -42,6 +42,7 @@
             ? {
                 params: params,
                 timeout: settings.code_editor_idle_timeout,
+                theme: currentTheme,
               }
             : {
                 'validate-on-blur': true,
@@ -225,11 +226,20 @@ export default {
       wrappable: true,
       pinHint: false,
       showHint: false,
+      currentTheme: 'light',
     };
   },
   mounted() {
     this.rawText = this.exp;
     this.wrapFunc();
+    
+    this.currentTheme = util.getCurrentTheme();
+    this.$root.$on('theme-changed', theme => {
+      this.currentTheme = theme;
+    });
+  },
+  beforeDestroy() {
+    this.$root.$off('theme-changed');
   },
   computed: {
     exp() {
@@ -493,18 +503,14 @@ export default {
 </script>
 <style scoped>
 .fullscreen {
-  position: fixed;
-  /* inset: 0; */
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100% !important;
-  resize: none;
-  background: #fff;
-  z-index: 1;
-  margin: 0;
-  padding: 1rem;
+    position: fixed;
+    inset: 0;
+    height: 100% !important;
+    resize: none;
+    background: var(--theme-bg-primary);
+    z-index: 1;
+    margin: 0;
+    padding: 1rem;
 }
 .fullscreen ::v-deep textarea,
 .fullscreen ::v-deep .ext-code-editor {

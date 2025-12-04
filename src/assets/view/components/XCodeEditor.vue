@@ -8,7 +8,7 @@
       (rules || []).map((f) => f(value)).filter((e) => e !== true)
     "
   >
-    <div class="v-label theme--light v-label--active" v-if="label">
+    <div class="v-label v-label--active" :class="theme === 'dark' ? 'theme--dark' : 'theme--light'" v-if="label">
       {{ label }}
     </div>
     <v-card
@@ -36,6 +36,11 @@ export default {
     error: Boolean,
     params: Object,
     timeout: [Number, Boolean],
+    theme: {
+      type: String,
+      default: 'light',
+      validator: value => ['light', 'dark'].includes(value),
+    },
   },
   model: {
     prop: "value",
@@ -197,7 +202,7 @@ export default {
       }
       let editor = codeEditor.create($el, {
         options: {
-          // theme: "vs-dark",
+          theme: this.theme === 'dark' ? 'vs-dark' : 'vs',
           language: "javascript",
           value: this.value,
         },
@@ -253,6 +258,19 @@ export default {
     },
   },
   watch: {
+    theme(newTheme) {
+      if (!this.editor) return;
+
+      (async () => {
+        try {
+          await this.editor.updateOptions({
+            theme: newTheme === 'dark' ? 'vs-dark' : 'vs',
+          });
+        } catch (e) {
+          console.warn('Failed to update editor theme:', e);
+        }
+      })();
+    },
     value(v) {
       if (!this.editor) return;
       (async () => {
