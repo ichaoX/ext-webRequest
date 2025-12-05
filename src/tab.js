@@ -209,7 +209,7 @@ util.addListener(browser.commands.onCommand, async (command) => {
 
 async function toggleTabStatus() {
   const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-  if (!tabs?.[0]) return;
+  if (!tabs[0]) return;
 
   const tabId = tabs[0].id;
   const info = getTabInfo(tabId);
