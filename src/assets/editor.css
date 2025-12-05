@@ -1,15 +1,15 @@
 :root {
     /* Light theme colors */
-    --light-bg: #ffffff;
+    --light-bg: #fafafa;
     --light-text: #212121;
     --light-text-muted: #757575;
-    --light-editor-bg: #eeeeee;
+    --light-editor-bg: #f0f0f0;
 
     /* Dark theme colors */
     --dark-bg: #1e1e1e;
-    --dark-text: #cccccc;
+    --dark-text: #d4d4d4;
     --dark-text-muted: #969696;
-    --dark-editor-bg: #1e1e1e;
+    --dark-editor-bg: #252525;
 
     /* Active theme variables (default to light) */
     --theme-bg: var(--light-bg);
