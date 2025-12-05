@@ -246,22 +246,22 @@ export default {
   text-align: center;
   display: block;
   padding: 20px;
-  color: var(--theme-text-secondary);
+  color: var(--theme-text-muted);
 }
 </style>
 <style>
 body {
   min-width: 300px;
   min-height: 150px;
-  background-color: var(--theme-bg-primary);
-  color: var(--theme-text-primary);
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
 }
 
 /* Avoid background color differences on pages */
 .v-application {
-  background: var(--theme-bg-primary) !important;
+  background: var(--theme-bg) !important;
 }
 .v-application .v-main__wrap {
-  background: var(--theme-bg-primary) !important;
+  background: var(--theme-bg) !important;
 }
 </style>

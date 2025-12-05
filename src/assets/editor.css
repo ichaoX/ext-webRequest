@@ -1,42 +1,42 @@
 :root {
     /* Light theme colors */
-    --light-bg-primary: #ffffff;
-    --light-text-primary: #212121;
-    --light-text-secondary: #757575;
+    --light-bg: #ffffff;
+    --light-text: #212121;
+    --light-text-muted: #757575;
     --light-editor-bg: #eeeeee;
 
     /* Dark theme colors */
-    --dark-bg-primary: #1e1e1e;
-    --dark-text-primary: #cccccc;
-    --dark-text-secondary: #969696;
+    --dark-bg: #1e1e1e;
+    --dark-text: #cccccc;
+    --dark-text-muted: #969696;
     --dark-editor-bg: #1e1e1e;
 
     /* Active theme variables (default to light) */
-    --theme-bg-primary: var(--light-bg-primary);
-    --theme-text-primary: var(--light-text-primary);
-    --theme-text-secondary: var(--light-text-secondary);
+    --theme-bg: var(--light-bg);
+    --theme-text: var(--light-text);
+    --theme-text-muted: var(--light-text-muted);
     --theme-editor-bg: var(--light-editor-bg);
 }
 
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) {
-        --theme-bg-primary: var(--dark-bg-primary);
-        --theme-text-primary: var(--dark-text-primary);
-        --theme-text-secondary: var(--dark-text-secondary);
+        --theme-bg: var(--dark-bg);
+        --theme-text: var(--dark-text);
+        --theme-text-muted: var(--dark-text-muted);
         --theme-editor-bg: var(--dark-editor-bg);
     }
 }
 
 :root[data-theme='dark'] {
-    --theme-bg-primary: var(--dark-bg-primary);
-    --theme-text-primary: var(--dark-text-primary);
-    --theme-text-secondary: var(--dark-text-secondary);
+    --theme-bg: var(--dark-bg);
+    --theme-text: var(--dark-text);
+    --theme-text-muted: var(--dark-text-muted);
     --theme-editor-bg: var(--dark-editor-bg);
 }
 
 /* Prevent page flash */
 html, body {
-    background-color: var(--theme-bg-primary) !important;
+    background-color: var(--theme-bg) !important;
 }
 
 /**

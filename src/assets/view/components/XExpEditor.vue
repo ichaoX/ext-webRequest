@@ -232,7 +232,7 @@ export default {
   mounted() {
     this.rawText = this.exp;
     this.wrapFunc();
-    
+
     this.currentTheme = util.getCurrentTheme();
     this.$root.$on('theme-changed', theme => {
       this.currentTheme = theme;
@@ -507,7 +507,7 @@ export default {
     inset: 0;
     height: 100% !important;
     resize: none;
-    background: var(--theme-bg-primary);
+    background: var(--theme-bg);
     z-index: 1;
     margin: 0;
     padding: 1rem;
