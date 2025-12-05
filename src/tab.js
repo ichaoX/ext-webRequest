@@ -196,10 +196,10 @@ util.addListener(browser.commands.onCommand, async (command) => {
         await toggleTabStatus();
         break;
       case 'toggle-global-status':
-        await toggleGlobalStatus();
+        await util.setSettings({ global_status: !settings.global_status });
         break;
       case 'open-options':
-        await openOptionsPage();
+        await browser.runtime.openOptionsPage();
         break;
     }
   } catch (e) {
@@ -215,17 +215,4 @@ async function toggleTabStatus() {
   const info = getTabInfo(tabId);
   info.disabled = !info.disabled;
   updateAction(tabId, 0);
-}
-
-async function toggleGlobalStatus() {
-  const { global_status } = await util.getSettings(['global_status']);
-  const newStatus = !global_status;
-
-  await util.setSettings({ global_status: newStatus });
-  settings.global_status = newStatus;
-  updateAction(0);
-}
-
-async function openOptionsPage() {
-  await browser.runtime.openOptionsPage();
 }
