@@ -206,6 +206,7 @@ ${exp}
         exp_verify_syntax: true,
         search_parse_js_object: false,
         request_verbose: 0,
+        theme_mode: 'auto',
         init: {
             exp: ''
         },
@@ -366,5 +367,64 @@ ${exp}
         } catch (e) {
             console.error(e);
         }
+    },
+    _theme: {
+        mode: 'auto',
+        resolved: 'light',
+        mediaQuery: null,
+        listener: null,
+        onThemeChange: null,
+    },
+    _resolveTheme(mode) {
+        if (mode === 'light' || mode === 'dark') {
+            return mode;
+        }
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return prefersDark ? 'dark' : 'light';
+    },
+    _applyTheme(theme) {
+        const resolvedTheme = theme === 'dark' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', resolvedTheme);
+        this._theme.resolved = resolvedTheme;
+        return resolvedTheme;
+    },
+    _setupAutoThemeListener() {
+        const mediaQuery = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+        if (!mediaQuery) return;
+
+        if (this._theme.mediaQuery && this._theme.listener) {
+            this._theme.mediaQuery.removeEventListener('change', this._theme.listener);
+        }
+
+        const listener = event => {
+            if (this._theme.mode !== 'auto') return;
+            const newTheme = this._applyTheme(event.matches ? 'dark' : 'light');
+            if (typeof this._theme.onThemeChange === 'function') {
+                this._theme.onThemeChange(newTheme);
+            }
+        };
+
+        mediaQuery.addEventListener('change', listener);
+        this._theme.mediaQuery = mediaQuery;
+        this._theme.listener = listener;
+    },
+    initTheme(mode = 'auto') {
+        this._theme.mode = mode;
+        const resolvedTheme = this._resolveTheme(mode);
+        this._applyTheme(resolvedTheme);
+
+        try {
+            localStorage.setItem('ext_theme_mode', mode);
+        } catch (e) {
+        }
+
+        this._setupAutoThemeListener();
+
+        if (typeof this._theme.onThemeChange === 'function') {
+            this._theme.onThemeChange(resolvedTheme);
+        }
+    },
+    getCurrentTheme() {
+        return this._theme.resolved;
     },
 };

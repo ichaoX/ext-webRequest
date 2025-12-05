@@ -91,8 +91,24 @@ const routes = [
     },
 ];
 
+const vuetify = new Vuetify({
+    // Initialize with pre-calculated theme to prevent flash of wrong theme
+    theme: {
+        dark: window.__initialTheme === 'dark',
+    },
+});
+
 const app = new Vue({
     router: new VueRouter({
         routes,
     }),
+    vuetify,
 }).$mount('#app')
+
+util._theme.onThemeChange = theme => {
+    vuetify.framework.theme.dark = theme === 'dark';
+};
+
+util.getSettings(['theme_mode'], results => {
+    util.initTheme(results.theme_mode || 'auto');
+});
