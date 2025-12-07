@@ -1173,9 +1173,6 @@ export default {
 
       util.initTheme(themeMode);
       await util.setSettings({ theme_mode: themeMode });
-
-      const resolvedTheme = util.getCurrentTheme();
-      this.$root.$emit('theme-changed', resolvedTheme);
     },
     execInit() {
       util.sendMessage("init");
