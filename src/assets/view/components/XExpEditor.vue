@@ -226,22 +226,16 @@ export default {
       wrappable: true,
       pinHint: false,
       showHint: false,
-      currentTheme: 'light',
     };
   },
   mounted() {
     this.rawText = this.exp;
     this.wrapFunc();
-
-    this.currentTheme = util.getCurrentTheme();
-    this.$root.$on('theme-changed', theme => {
-      this.currentTheme = theme;
-    });
-  },
-  beforeDestroy() {
-    this.$root.$off('theme-changed');
   },
   computed: {
+    currentTheme() {
+      return this.$vuetify.theme.dark ? 'dark' : 'light';
+    },
     exp() {
       return (this.raw || "").replace(/^\/\/# REMOVABLE\n/, "");
     },
