@@ -764,10 +764,6 @@ export default {
     XTooltip,
   },
   mounted() {
-    this.$root.$on('theme-changed', () => {
-      this.$forceUpdate();
-    });
-
     let loadSettings = (results) => {
       if (!results) return;
       for (let key in results) {
