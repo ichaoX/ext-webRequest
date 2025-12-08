@@ -69,7 +69,10 @@
     </v-app-bar>
     <v-main>
       <v-container class="pa-0">
-        <v-list class="rule-list" dense two-line subheader>
+        <div v-if="!ruleStat.length" class="pa-5 text-center text--secondary">
+          No matching rules
+        </div>
+        <v-list v-else class="rule-list" dense two-line subheader>
           <template v-for="(rule, k) in ruleStat">
             <v-divider v-if="k > 0" :key="'divider_' + k"></v-divider>
             <v-list-item :key="k">
@@ -240,28 +243,12 @@ export default {
   },
 };
 </script>
-<style scoped>
-.rule-list:empty:after {
-  content: "No matching rules";
-  text-align: center;
-  display: block;
-  padding: 20px;
-  color: var(--theme-text-muted);
-}
-</style>
 <style>
 body {
   min-width: 300px;
   min-height: 150px;
-  background-color: var(--theme-bg);
-  color: var(--theme-text);
 }
 
 /* Avoid background color differences on pages */
-.v-application {
-  background: var(--theme-bg) !important;
-}
-.v-application .v-main__wrap {
-  background: var(--theme-bg) !important;
-}
+
 </style>

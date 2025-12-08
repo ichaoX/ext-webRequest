@@ -28,10 +28,15 @@
         </v-btn>
       </template>
     </v-autocomplete>
-    <div v-else @mouseleave="pinHint = false">
+    <v-card
+      v-else
+      @mouseleave="pinHint = false"
+      flat
+      tile
+      :class="{ fullscreen }"
+    >
       <component
         :is="useCodeEditor ? 'x-code-editor' : 'v-textarea'"
-        :class="{ fullscreen }"
         ref="input"
         :label="label || 'Code'"
         :value="useCodeEditor ? wrapFuncExp : exp"
@@ -42,7 +47,6 @@
             ? {
                 params: params,
                 timeout: settings.code_editor_idle_timeout,
-                theme: currentTheme,
               }
             : {
                 'validate-on-blur': true,
@@ -125,7 +129,7 @@
           </div>
         </template>
       </component>
-    </div>
+    </v-card>
 
     <slot :value="value" :error="error"></slot>
 
@@ -233,9 +237,6 @@ export default {
     this.wrapFunc();
   },
   computed: {
-    currentTheme() {
-      return this.$vuetify.theme.dark ? 'dark' : 'light';
-    },
     exp() {
       return (this.raw || "").replace(/^\/\/# REMOVABLE\n/, "");
     },
@@ -498,10 +499,12 @@ export default {
 <style scoped>
 .fullscreen {
     position: fixed;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 100% !important;
     resize: none;
-    background: var(--theme-bg);
     z-index: 1;
     margin: 0;
     padding: 1rem;

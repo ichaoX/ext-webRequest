@@ -368,63 +368,60 @@ ${exp}
             console.error(e);
         }
     },
-    _theme: {
-        mode: 'auto',
-        resolved: 'light',
-        mediaQuery: null,
-        listener: null,
+    theme: {
         onThemeChange: null,
-    },
-    _resolveTheme(mode) {
-        if (mode === 'light' || mode === 'dark') {
-            return mode;
-        }
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        return prefersDark ? 'dark' : 'light';
-    },
-    _applyTheme(theme) {
-        const resolvedTheme = theme === 'dark' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', resolvedTheme);
-        this._theme.resolved = resolvedTheme;
-        return resolvedTheme;
-    },
-    _setupAutoThemeListener() {
-        const mediaQuery = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
-        if (!mediaQuery) return;
-
-        if (this._theme.mediaQuery && this._theme.listener) {
-            this._theme.mediaQuery.removeEventListener('change', this._theme.listener);
-        }
-
-        const listener = event => {
-            if (this._theme.mode !== 'auto') return;
-            const newTheme = this._applyTheme(event.matches ? 'dark' : 'light');
-            if (typeof this._theme.onThemeChange === 'function') {
-                this._theme.onThemeChange(newTheme);
+        _state: {
+            mode: 'auto',
+            resolved: 'light',
+            mediaQuery: null,
+            listener: null,
+        },
+        _resolve(mode) {
+            if (mode === 'light' || mode === 'dark') {
+                return mode;
             }
-        };
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            return prefersDark ? 'dark' : 'light';
+        },
+        _apply(theme) {
+            const resolvedTheme = theme === 'dark' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', resolvedTheme);
+            this._state.resolved = resolvedTheme;
+            return resolvedTheme;
+        },
+        _setupAutoListener() {
+            const mediaQuery = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+            if (!mediaQuery) return;
 
-        mediaQuery.addEventListener('change', listener);
-        this._theme.mediaQuery = mediaQuery;
-        this._theme.listener = listener;
-    },
-    initTheme(mode = 'auto') {
-        this._theme.mode = mode;
-        const resolvedTheme = this._resolveTheme(mode);
-        this._applyTheme(resolvedTheme);
+            if (this._state.mediaQuery && this._state.listener) {
+                this._state.mediaQuery.removeEventListener('change', this._state.listener);
+            }
 
-        try {
-            localStorage.setItem('ext_theme_mode', mode);
-        } catch (e) {
-        }
+            const listener = event => {
+                if (this._state.mode !== 'auto') return;
+                const newTheme = this._apply(event.matches ? 'dark' : 'light');
+                if (typeof this.onThemeChange === 'function') {
+                    this.onThemeChange(newTheme);
+                }
+            };
 
-        this._setupAutoThemeListener();
+            mediaQuery.addEventListener('change', listener);
+            this._state.mediaQuery = mediaQuery;
+            this._state.listener = listener;
+        },
+        init(mode = 'auto') {
+            this._state.mode = mode;
+            const resolvedTheme = this._resolve(mode);
+            this._apply(resolvedTheme);
 
-        if (typeof this._theme.onThemeChange === 'function') {
-            this._theme.onThemeChange(resolvedTheme);
-        }
-    },
-    getCurrentTheme() {
-        return this._theme.resolved;
+            this._setupAutoListener();
+
+            if (typeof this.onThemeChange === 'function') {
+                this.onThemeChange(resolvedTheme);
+            }
+        },
+        getCurrent() {
+            return this._state.resolved;
+        },
     },
 };

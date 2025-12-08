@@ -1,44 +1,3 @@
-:root {
-    /* Light theme colors */
-    --light-bg: #fafafa;
-    --light-text: #212121;
-    --light-text-muted: #757575;
-    --light-editor-bg: #f0f0f0;
-
-    /* Dark theme colors */
-    --dark-bg: #1e1e1e;
-    --dark-text: #d4d4d4;
-    --dark-text-muted: #969696;
-    --dark-editor-bg: #252525;
-
-    /* Active theme variables (default to light) */
-    --theme-bg: var(--light-bg);
-    --theme-text: var(--light-text);
-    --theme-text-muted: var(--light-text-muted);
-    --theme-editor-bg: var(--light-editor-bg);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) {
-        --theme-bg: var(--dark-bg);
-        --theme-text: var(--dark-text);
-        --theme-text-muted: var(--dark-text-muted);
-        --theme-editor-bg: var(--dark-editor-bg);
-    }
-}
-
-:root[data-theme='dark'] {
-    --theme-bg: var(--dark-bg);
-    --theme-text: var(--dark-text);
-    --theme-text-muted: var(--dark-text-muted);
-    --theme-editor-bg: var(--dark-editor-bg);
-}
-
-/* Prevent page flash */
-html, body {
-    background-color: var(--theme-bg) !important;
-}
-
 /**
  * Code Editor Extension
  * @version: 1.1
@@ -50,7 +9,7 @@ html, body {
     width: 100%;
     resize: vertical;
     overflow-y: hidden;
-    background-color: var(--theme-editor-bg);
+    background-color: #eee;
     box-sizing: border-box;
 }
 

@@ -638,7 +638,7 @@
                   <x-list-item label="Theme">
                     <v-chip-group
                       v-model="settings.theme_mode"
-                      @change="onThemeChange"
+                      @change="saveSettings({ theme_mode: $event })"
                       mandatory
                       active-class="primary--text"
                     >
@@ -1167,12 +1167,6 @@ export default {
     verifyExp(exp, type) {
       if (!this.settings.exp_verify_syntax) return true;
       return util.validExp(util.normalFuncExp(exp, type), "function");
-    },
-    async onThemeChange(mode) {
-      const themeMode = mode || 'auto';
-
-      util.initTheme(themeMode);
-      await util.setSettings({ theme_mode: themeMode });
     },
     execInit() {
       util.sendMessage("init");
