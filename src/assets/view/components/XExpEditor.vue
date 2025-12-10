@@ -498,16 +498,17 @@ export default {
 </script>
 <style scoped>
 .fullscreen {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100% !important;
-    resize: none;
-    z-index: 1;
-    margin: 0;
-    padding: 1rem;
+  position: fixed;
+  /* inset: 0; */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100% !important;
+  resize: none;
+  z-index: 1;
+  margin: 0;
+  padding: 1rem;
 }
 .fullscreen ::v-deep textarea,
 .fullscreen ::v-deep .ext-code-editor {

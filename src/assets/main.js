@@ -92,9 +92,8 @@ const routes = [
 ];
 
 const vuetify = new Vuetify({
-    // Initialize with pre-calculated theme to prevent flash of wrong theme
     theme: {
-        dark: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches,
+        dark: util.theme._resolve() === 'dark',
     },
 });
 

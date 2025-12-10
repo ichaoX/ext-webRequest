@@ -385,7 +385,6 @@ ${exp}
         },
         _apply(theme) {
             const resolvedTheme = theme === 'dark' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', resolvedTheme);
             this._state.resolved = resolvedTheme;
             return resolvedTheme;
         },
@@ -419,9 +418,6 @@ ${exp}
             if (typeof this.onThemeChange === 'function') {
                 this.onThemeChange(resolvedTheme);
             }
-        },
-        getCurrent() {
-            return this._state.resolved;
         },
     },
 };

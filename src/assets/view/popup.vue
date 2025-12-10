@@ -248,7 +248,4 @@ body {
   min-width: 300px;
   min-height: 150px;
 }
-
-/* Avoid background color differences on pages */
-
 </style>
