@@ -635,6 +635,19 @@
                     </v-slider>
                   </x-list-item>
                   <v-divider></v-divider>
+                  <x-list-item label="Theme">
+                    <v-chip-group
+                      v-model="settings.theme_mode"
+                      @change="saveSettings({ theme_mode: $event })"
+                      mandatory
+                      active-class="primary--text"
+                    >
+                      <v-chip label value="auto">Auto</v-chip>
+                      <v-chip label value="light">Light</v-chip>
+                      <v-chip label value="dark">Dark</v-chip>
+                    </v-chip-group>
+                  </x-list-item>
+                  <v-divider></v-divider>
                   <x-list-item label="Popup">
                     <v-checkbox
                       label="Auto close popup when go to new page"
@@ -739,7 +752,6 @@ import XTableGroupHeader from "./components/XTableGroupHeader.vue";
 import XTooltip from "./components/XTooltip.vue";
 
 export default {
-  vuetify: new Vuetify(),
   components: {
     XVNodes: {
       functional: true,

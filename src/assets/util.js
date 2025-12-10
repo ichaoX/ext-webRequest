@@ -206,6 +206,7 @@ ${exp}
         exp_verify_syntax: true,
         search_parse_js_object: false,
         request_verbose: 0,
+        theme_mode: 'auto',
         init: {
             exp: ''
         },
@@ -366,5 +367,57 @@ ${exp}
         } catch (e) {
             console.error(e);
         }
+    },
+    theme: {
+        onThemeChange: null,
+        _state: {
+            mode: 'auto',
+            resolved: 'light',
+            mediaQuery: null,
+            listener: null,
+        },
+        _resolve(mode) {
+            if (mode === 'light' || mode === 'dark') {
+                return mode;
+            }
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            return prefersDark ? 'dark' : 'light';
+        },
+        _apply(theme) {
+            const resolvedTheme = theme === 'dark' ? 'dark' : 'light';
+            this._state.resolved = resolvedTheme;
+            return resolvedTheme;
+        },
+        _setupAutoListener() {
+            const mediaQuery = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+            if (!mediaQuery) return;
+
+            if (this._state.mediaQuery && this._state.listener) {
+                this._state.mediaQuery.removeEventListener('change', this._state.listener);
+            }
+
+            const listener = event => {
+                if (this._state.mode !== 'auto') return;
+                const newTheme = this._apply(event.matches ? 'dark' : 'light');
+                if (typeof this.onThemeChange === 'function') {
+                    this.onThemeChange(newTheme);
+                }
+            };
+
+            mediaQuery.addEventListener('change', listener);
+            this._state.mediaQuery = mediaQuery;
+            this._state.listener = listener;
+        },
+        init(mode = 'auto') {
+            this._state.mode = mode;
+            const resolvedTheme = this._resolve(mode);
+            this._apply(resolvedTheme);
+
+            this._setupAutoListener();
+
+            if (typeof this.onThemeChange === 'function') {
+                this.onThemeChange(resolvedTheme);
+            }
+        },
     },
 };

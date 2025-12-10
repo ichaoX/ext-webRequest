@@ -8,12 +8,17 @@
       (rules || []).map((f) => f(value)).filter((e) => e !== true)
     "
   >
-    <div class="v-label theme--light v-label--active" v-if="label">
+    <div class="v-label v-label--active" v-if="label">
       {{ label }}
     </div>
+    <!--
+      Static class binding to prevent loss during re-render.
+      Ensure that Code Editor embedded iframe don't fall back to the default size.
+    -->
     <v-card
       flat
       width="100%"
+      class="ext-code-editor"
       v-intersect="{
         handler: onIntersect,
         options: {
@@ -197,7 +202,7 @@ export default {
       }
       let editor = codeEditor.create($el, {
         options: {
-          // theme: "vs-dark",
+          theme: this.monacoTheme,
           language: "javascript",
           value: this.value,
         },
@@ -252,7 +257,25 @@ export default {
       this.$emit("change", this.currentValue);
     },
   },
+  computed: {
+    monacoTheme() {
+      return this.$vuetify.theme.dark ? 'vs-dark' : 'vs';
+    },
+  },
   watch: {
+    monacoTheme(newTheme) {
+      if (!this.editor) return;
+
+      (async () => {
+        try {
+          await this.editor.updateOptions({
+            theme: newTheme,
+          });
+        } catch (e) {
+          console.warn('Failed to update editor theme:', e);
+        }
+      })();
+    },
     value(v) {
       if (!this.editor) return;
       (async () => {

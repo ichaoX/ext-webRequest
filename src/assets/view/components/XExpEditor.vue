@@ -28,10 +28,15 @@
         </v-btn>
       </template>
     </v-autocomplete>
-    <div v-else @mouseleave="pinHint = false">
+    <v-card
+      v-else
+      @mouseleave="pinHint = false"
+      flat
+      tile
+      :class="{ fullscreen }"
+    >
       <component
         :is="useCodeEditor ? 'x-code-editor' : 'v-textarea'"
-        :class="{ fullscreen }"
         ref="input"
         :label="label || 'Code'"
         :value="useCodeEditor ? wrapFuncExp : exp"
@@ -124,7 +129,7 @@
           </div>
         </template>
       </component>
-    </div>
+    </v-card>
 
     <slot :value="value" :error="error"></slot>
 
@@ -501,7 +506,6 @@ export default {
   right: 0;
   height: 100% !important;
   resize: none;
-  background: #fff;
   z-index: 1;
   margin: 0;
   padding: 1rem;
