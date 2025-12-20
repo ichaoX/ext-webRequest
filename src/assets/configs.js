@@ -264,7 +264,92 @@ self.WR = {
 		options[/^[^/]+:\\/\\//i.test(url) ? 'url' : 'domain'] = url;
 		return (await browser.cookies.getAll(options)).
 			filter(n => n.session || n.expirationDate * 1000 > Date.now()).
-			reduce((a, b) => a + b.name + '=' + b.value + ';', '');
+			map((c) => c.name + '=' + c.value).join('; ');
+	},
+	Headers: class {
+		/**
+		 * @param {HeadersInit|browser.webRequest.HttpHeaders} init
+		 */
+		constructor(init) {
+			/** @type {object[]} */
+			this._headers = [];
+			if (!init) return;
+			if (init instanceof this.constructor) {
+				this._headers = JSON.parse(JSON.stringify(init._headers));
+				return;
+			}
+			if (init instanceof Headers) init = [...init.entries()];
+			if (Array.isArray(init)) {
+				if (init[0] && 'string' == typeof init[0].name) init = init.map(i => [i.name, i.value]);
+			} else {
+				init = Object.entries(init);
+			}
+			init.forEach(i => this.append(i[0], i[1]));
+		}
+		/**
+		 * @param {string} name
+		 * @param {string} value
+		 */
+		append(name, value) {
+			this._headers.push({ key: name.toLowerCase(), name, value });
+			return this;
+		}
+		/**
+		 * @param {string} name
+		 */
+		delete(name) {
+			let key = name.toLowerCase();
+			this._headers = this._headers.filter(e => e.key != key);
+			return this;
+		}
+		/**
+		 * @param {string} name
+		 * @param {string|null} value
+		 */
+		set(name, value) {
+			this.delete(name);
+			if (value != null) this.append(name, value);
+			return this;
+		}
+		/**
+		 * @param {string} name
+		 */
+		getAll(name) {
+			let key = name.toLowerCase();
+			return this._headers.filter(e => e.key == key).map(i => i.value);
+		}
+		getSetCookie() {
+			return this.getAll('Set-Cookie');
+		}
+		/**
+		 * @param {string} name
+		 */
+		get(name) {
+			let values = this.getAll(name);
+			return values.length > 0 ? values.join(', ') : null;
+		}
+		/**
+		 * @param {string} name
+		 */
+		has(name) {
+			let key = name.toLowerCase();
+			return this._headers.some(i => i.key == key);
+		}
+		forEach(callbackFn, thisArg) {
+			return this._headers.forEach(i => callbackFn.call(thisArg, i.value, i.name));
+		}
+		valueOf() {
+			return this._headers.map(i => ({ name: i.name, value: '' + i.value }));
+		}
+		*entries() {
+			for (let item of this._headers) yield [item.name, item.value];
+		}
+		*keys() {
+			for (let item of this._headers) yield item.name;
+		}
+		*values() {
+			for (let item of this._headers) yield item.value;
+		}
 	},
 };
 `,
