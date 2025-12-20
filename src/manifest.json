@@ -55,5 +55,17 @@
     "gecko": {
       "id": "webrequest@example.com"
     }
+  },
+  "commands": {
+    "_execute_browser_action": {},
+    "toggle-tab-status": {
+      "description": "Toggle current tab status"
+    },
+    "toggle-global-status": {
+      "description": "Toggle global status"
+    },
+    "open-options": {
+      "description": "Open options page"
+    }
   }
 }
