@@ -62,13 +62,17 @@ fonts: cache/mdi.tgz cache/roboto.tgz
 		tar -zxvf cache/mdi.tgz -C "$$TARGET_DIR" \
 		--strip-components=1 \
 		package/css/materialdesignicons.min.css \
-		package/fonts/materialdesignicons-webfont.woff2
+		package/fonts/materialdesignicons-webfont.woff2 && \
+		sed -E 's/(url\([^)]*)\?[^")]*/\1/g; s/,?\s*url\([^)]*(eot|woff|ttf)"?\)[^,;}]*,?//g; s/src:\s*;//g' \
+		-i "$$TARGET_DIR"/css/*.css
 	TARGET_DIR="$(EXTERNAL_DIR)/fonts/roboto" && \
 		mkdir -p "$$TARGET_DIR" && \
 		tar -zxvf cache/roboto.tgz -C "$$TARGET_DIR" \
 		--strip-components=1 --wildcards\
 		package/latin.css \
-		package/files/roboto-latin-[1-9]00-normal.woff2
+		package/files/roboto-latin-[1-9]00-normal.woff2 && \
+		sed -E 's/,\s*url\([^)]*woff"?\)[^;}]*//g' \
+		-i "$$TARGET_DIR"/*.css
 
 
 cache/vue.js:
