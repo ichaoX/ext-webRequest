@@ -266,6 +266,17 @@ self.WR = {
 			filter(n => n.session || n.expirationDate * 1000 > Date.now()).
 			map((c) => c.name + '=' + c.value).join('; ');
 	},
+	/**
+	 * @param {string} encoding
+	 * @return {TextEncoder}
+	 */
+	textEncoder: (encoding) => {
+		if ('string' === typeof encoding && !/^utf-?8$/i.test(encoding)) {
+			// https://github.com/inexorabletash/text-encoding
+			return new self._legacyTextEncoder(encoding, { NONSTANDARD_allowLegacyEncoding: true });
+		}
+		return new self.TextEncoder();
+	},
 	Headers: class {
 		/**
 		 * @param {HeadersInit|browser.webRequest.HttpHeaders} init
@@ -352,35 +363,6 @@ self.WR = {
 		}
 	},
 };
-`,
-    }, {
-            name: 'Legacy Text Encoding',
-            exp: `
-if (self._legacyTextEncoder && !self._nativeTextEncoder) {
-	const nativeTextEncoder = self.TextEncoder;
-	self._nativeTextEncoder = nativeTextEncoder;
-	const TextEncoder = function (...args) {
-		if (!(this instanceof TextEncoder))
-			throw TypeError("TextEncoder constructor: 'new' is required");
-		if (args.length === 1 && 'string' === typeof args[0] && !/^utf-?8$/i.test(args[0])) {
-			// https://github.com/inexorabletash/text-encoding
-			return new self._legacyTextEncoder(args[0], { NONSTANDARD_allowLegacyEncoding: true });
-		} else {
-			return new nativeTextEncoder(...args);
-		}
-	};
-	try {
-		if (nativeTextEncoder.prototype !== Object.prototype) {
-			TextEncoder.prototype = nativeTextEncoder.prototype;
-			if (Object.getPrototypeOf(self._legacyTextEncoder.prototype) === Object.prototype) {
-				Object.setPrototypeOf(self._legacyTextEncoder.prototype, nativeTextEncoder.prototype);
-			}
-		}
-	} catch (e) {
-		console.warn(e);
-	}
-	self.TextEncoder = TextEncoder;
-}
 `,
         }],
     },
