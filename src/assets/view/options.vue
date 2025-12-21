@@ -616,8 +616,8 @@
                 <v-list>
                   <x-list-item label="Tab stats refresh delay">
                     <v-slider
-                      v-model="settings.tab_info_throtte"
-                      @change="saveSettings({ tab_info_throtte: $event })"
+                      v-model="settings.tab_info_throttle"
+                      @change="saveSettings({ tab_info_throttle: $event })"
                       :min="100"
                       :max="5000"
                       :step="100"
@@ -629,7 +629,7 @@
                           class="subheading font-weight-light ml-1"
                           style="width: 60px"
                         >
-                          {{ settings.tab_info_throtte }}ms
+                          {{ settings.tab_info_throttle }}ms
                         </span>
                       </template>
                     </v-slider>

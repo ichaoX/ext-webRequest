@@ -201,7 +201,7 @@ ${exp}
         global_test: {
             exp: ''
         },
-        tab_info_throtte: 500,
+        tab_info_throttle: 500,
         popup_auto_close: true,
         exp_verify_syntax: true,
         search_parse_js_object: false,

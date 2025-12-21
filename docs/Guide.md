@@ -42,12 +42,14 @@ For more details, visit: https://developer.mozilla.org/en-US/docs/Mozilla/Add-on
 
 # Notes
 
-1. There may be conflicts with other web extensions, as they might modify the same request.
+* There may be conflicts with other web extensions, as they might modify the same request.
 
-2. The data displayed in the Web Developer Tools may be before modification.
+* The data displayed in the Web Developer Tools may be before modification.
 
-3. Avoid using `async function` or handling complex calculations during the `Match Request` stage, as this may slow down all requests.
+* The browser may not fire some WebRequest events, such as when using cache or Service Workers.
 
-4. Conflicts should be avoided when sharing data using `share`, `self`, or `window`.
+* Avoid using `async function` or handling complex calculations during the `Match Request` stage, as this may slow down all requests.
 
-5. Use `FilterResponse` only when necessary; avoid modifying the request body of a single request by multiple rules at the same time.
+* Conflicts should be avoided when sharing data using `share`, `self`, or `window`.
+
+* Use `FilterResponse` only when necessary; avoid modifying the request body of a single request by multiple rules at the same time.
