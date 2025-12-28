@@ -20,18 +20,18 @@ return details.url.startsWith(prefix);
 2. BeforeSendHeaders > Modify Request Header
 
 <pre>
-<code>let headersInit = <b>{
+<code>let customHeaders = <b>{
 	"x-req-a": "v1",
 	"x-req-b": "v2",
 	"user-agent": "curl/1.2",
 	"accept-language": null,
 }</b>;
-let headers = Object.entries(headersInit)
+let headers = Object.entries(customHeaders)
 	.filter(([k, v]) => v !== null)
 	.map(([k, v]) => ({ name: k, value: v }));
 for (let header of details.requestHeaders) {
 	let name = header.name.toLowerCase();
-	if (name in headersInit) continue;
+	if (name in customHeaders) continue;
 	headers.push(header);
 }
 return { requestHeaders: headers };
@@ -52,7 +52,7 @@ return hostnames.includes(urlObj.hostname);
 2. HeadersReceived > Modify Response Header
 
 <pre>
-<code>let headersInit = <b>{
+<code>let customHeaders = <b>{
 	"access-control-allow-origin": "*",
 	"access-control-expose-headers":"*",
 	"content-security-policy": null,
@@ -61,12 +61,12 @@ return hostnames.includes(urlObj.hostname);
 	"x-res-a":"v1",
 	"x-res-b":"v2",
 }</b>;
-let headers = Object.entries(headersInit)
+let headers = Object.entries(customHeaders)
 	.filter(([k, v]) => v !== null)
 	.map(([k, v]) => ({ name: k, value: v }));
 for (let header of details.responseHeaders) {
 	let name = header.name.toLowerCase();
-	if (name in headersInit) continue;
+	if (name in customHeaders) continue;
 	headers.push(header);
 }
 return { responseHeaders: headers };
@@ -352,15 +352,15 @@ return false;
 <pre>
 <code><b>async function f(details, share) {
 </b>
-let headersInit = <b>{
+let customHeaders = <b>{
 	"cookie": await WR.getCookie("httpbin.org"),
 }</b>;
-let headers = Object.entries(headersInit)
+let headers = Object.entries(customHeaders)
 	.filter(([k, v]) => v !== null)
 	.map(([k, v]) => ({ name: k, value: v }));
 for (let header of details.requestHeaders) {
 	let name = header.name.toLowerCase();
-	if (name in headersInit) continue;
+	if (name in customHeaders) continue;
 	headers.push(header);
 }
 return { requestHeaders: headers };

@@ -569,17 +569,17 @@ async function f(details, share) {
         tpl: [{
                 name: 'Modify Request Header',
                 exp: `
-let headersInit = {
+let customHeaders = {
 	"x-forwarded-for": "127.0.0.1",
 	"user-agent": "Mozilla/5.0",
 	"referer": null,
 };
-let headers = Object.entries(headersInit)
+let headers = Object.entries(customHeaders)
 	.filter(([k, v]) => v !== null)
 	.map(([k, v]) => ({ name: k, value: v }));
 for (let header of details.requestHeaders) {
 	let name = header.name.toLowerCase();
-	if (name in headersInit) continue;
+	if (name in customHeaders) continue;
 	headers.push(header);
 }
 return { requestHeaders: headers };
@@ -663,19 +663,19 @@ function f(details, share) {
         tpl: [{
                 name: 'Modify Response Header',
                 exp: `
-let headersInit = {
+let customHeaders = {
 	"access-control-allow-origin": "*",
 	"access-control-allow-headers": "Content-Type, Range, X-Requested-With",
 	"content-security-policy": null,
 	"content-security-policy-report-only": null,
 	"x-frame-options": null,
 };
-let headers = Object.entries(headersInit)
+let headers = Object.entries(customHeaders)
 	.filter(([k, v]) => v !== null)
 	.map(([k, v]) => ({ name: k, value: v }));
 for (let header of details.responseHeaders) {
 	let name = header.name.toLowerCase();
-	if (name in headersInit) continue;
+	if (name in customHeaders) continue;
 	headers.push(header);
 }
 return { responseHeaders: headers };
