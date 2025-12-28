@@ -25,6 +25,7 @@
     "downloads",
     "history",
     "notifications",
+    "tabGroups",
     "tabHide",
     "webNavigation",
     "webRequestFilterResponse.serviceWorkerScript"
