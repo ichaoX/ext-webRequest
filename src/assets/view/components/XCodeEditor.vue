@@ -324,8 +324,3 @@ export default {
   position: absolute;
 }
 </style>
-<style>
-.ext-code-editor--loading iframe {
-  display: block !important;
-}
-</style>

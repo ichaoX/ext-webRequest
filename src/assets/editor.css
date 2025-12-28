@@ -1,6 +1,6 @@
 /**
  * Code Editor Extension
- * @version: 1.1
+ * @version: 1.2
  */
 
 .ext-code-editor {
@@ -22,10 +22,6 @@
 .ext-code-editor--loading {
     animation: ext-code-editor--loading 1s infinite alternate;
     pointer-events: none;
-}
-
-.ext-code-editor--loading iframe {
-    display: none;
 }
 
 .ext-code-editor--disconnected {
