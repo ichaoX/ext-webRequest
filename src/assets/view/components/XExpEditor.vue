@@ -279,10 +279,14 @@ export default {
           exp: o.exp.trim(),
           editable: true,
         })),
-        (this.getConfig("tpl") || []).map((o) => ({
-          name: o.name,
-          exp: o.exp.trim(),
-        }))
+        (this.getConfig("tpl") || [])
+          .filter((o) => {
+            return !o.when || o.when();
+          })
+          .map((o) => ({
+            name: o.name,
+            exp: o.exp.trim(),
+          }))
       );
     },
     useCodeEditor() {

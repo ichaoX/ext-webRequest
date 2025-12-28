@@ -443,6 +443,16 @@ return hostnames.includes(urlObj.hostname);
 `,
             },
             {
+                when() {
+                    return self.WR && 'function' == typeof self.WR.isDomain;
+                },
+                name: 'Wildcard Domain (WR.isDomain API)',
+                exp: `
+let pattern = ['example.com', /^(.*\\.)?example\\.(org|net)$/];
+return WR.isDomain(details.url, pattern);
+`,
+            },
+            {
                 name: 'URL',
                 exp: `
 let url = 'http://example.com/';
@@ -586,6 +596,24 @@ return { requestHeaders: headers };
 `,
             },
             {
+                when() {
+                    return self.WR && 'function' == typeof self.WR.Headers;
+                },
+                name: 'Modify Request Header (WR.Headers API)',
+                exp: `
+let customHeaders = {
+	"x-forwarded-for": "127.0.0.1",
+	"user-agent": "Mozilla/5.0",
+	"referer": null,
+};
+let headers = new WR.Headers(details.requestHeaders);
+for (let [name, value] of Object.entries(customHeaders)) {
+	headers.set(name, value);
+}
+return { requestHeaders: headers.valueOf() };
+`,
+            },
+            {
                 name: 'Cancel',
                 exp: `
 return { cancel: true };
@@ -679,6 +707,26 @@ for (let header of details.responseHeaders) {
 	headers.push(header);
 }
 return { responseHeaders: headers };
+`,
+            },
+            {
+                when() {
+                    return self.WR && 'function' == typeof self.WR.Headers;
+                },
+                name: 'Modify Response Header (WR.Headers API)',
+                exp: `
+let customHeaders = {
+	"access-control-allow-origin": "*",
+	"access-control-allow-headers": "Content-Type, Range, X-Requested-With",
+	"content-security-policy": null,
+	"content-security-policy-report-only": null,
+	"x-frame-options": null,
+};
+let headers = new WR.Headers(details.responseHeaders);
+for (let [name, value] of Object.entries(customHeaders)) {
+	headers.set(name, value);
+}
+return { responseHeaders: headers.valueOf() };
 `,
             },
             {
